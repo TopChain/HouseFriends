@@ -2,6 +2,7 @@
   "expo": {
     "name": "HouseFriends",
     "slug": "housefriends",
+    "owner": "topchain",
     "scheme": "housefriends",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -61,7 +62,10 @@
       "typedRoutes": true
     },
     "extra": {
-      "router": { "origin": false }
+      "router": { "origin": false },
+      "eas": {
+        "projectId": "df7c991f-5869-4e7d-8edc-f22d48bcfd99"
+      }
     }
   }
 }
