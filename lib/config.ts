@@ -1,6 +1,7 @@
 const requiredProductionKeys = [
-  'EXPO_PUBLIC_SUPABASE_URL',
-  'EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY',
+  'EXPO_PUBLIC_NEON_AUTH_URL',
+  'EXPO_PUBLIC_NEON_DATA_API_URL',
+  'EXPO_PUBLIC_MEDIA_API_URL',
   'EXPO_PUBLIC_MAP_STYLE_URL',
   'EXPO_PUBLIC_PRIVACY_URL',
   'EXPO_PUBLIC_TERMS_URL',
@@ -12,8 +13,9 @@ const requiredProductionKeys = [
 export const config = {
   mode: process.env.EXPO_PUBLIC_APP_MODE ?? 'demo',
   enableDemoMode: process.env.EXPO_PUBLIC_ENABLE_DEMO_MODE !== 'false',
-  supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL ?? '',
-  supabasePublishableKey: process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? '',
+  neonAuthUrl: process.env.EXPO_PUBLIC_NEON_AUTH_URL ?? '',
+  neonDataApiUrl: process.env.EXPO_PUBLIC_NEON_DATA_API_URL ?? '',
+  mediaApiUrl: process.env.EXPO_PUBLIC_MEDIA_API_URL ?? '',
   mapStyleUrl: process.env.EXPO_PUBLIC_MAP_STYLE_URL ?? '',
   privacyUrl: process.env.EXPO_PUBLIC_PRIVACY_URL ?? '',
   termsUrl: process.env.EXPO_PUBLIC_TERMS_URL ?? '',

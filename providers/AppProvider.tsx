@@ -1,12 +1,11 @@
-import type { Session } from '@supabase/supabase-js';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
 import { demoProfiles } from '@/data/demo';
 import { config } from '@/lib/config';
-import { isSupabaseConfigured, supabase } from '@/lib/supabase';
+import { isNeonConfigured, neon, type NeonSession } from '@/lib/neon';
 import type { AppRole, PublicProfile } from '@/types/domain';
 
 type AppContextValue = {
-  session: Session | null;
+  session: NeonSession | null;
   profile: PublicProfile | null;
   role: AppRole;
   loading: boolean;
@@ -28,17 +27,17 @@ const demoRoleProfile: Record<AppRole, keyof typeof demoProfiles> = {
 };
 
 export function AppProvider({ children }: PropsWithChildren) {
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<NeonSession | null>(null);
   const [role, setRole] = useState<AppRole>('searcher');
   const [profile, setProfile] = useState<PublicProfile | null>(config.enableDemoMode ? demoProfiles.searcher! : null);
-  const [loading, setLoading] = useState(isSupabaseConfigured && config.mode === 'production');
+  const [loading, setLoading] = useState(isNeonConfigured && config.mode === 'production');
   const [language, setLanguage] = useState<'en' | 'zh-Hant'>('en');
 
   const refreshProfile = useCallback(async () => {
     if (!session) return;
     const [{ data: publicProfile, error: profileError }, { data: roleRows, error: rolesError }] = await Promise.all([
-      supabase.from('public_profiles').select('id, alias, hf_id').eq('id', session.user.id).maybeSingle(),
-      supabase.from('user_roles').select('role').eq('user_id', session.user.id),
+      neon.from('public_profiles').select('id, alias, hf_id').eq('id', session.user.id).maybeSingle(),
+      neon.from('user_roles').select('role').eq('user_id', session.user.id),
     ]);
     if (profileError) throw profileError;
     if (rolesError) throw rolesError;
@@ -56,14 +55,14 @@ export function AppProvider({ children }: PropsWithChildren) {
   }, [session]);
 
   useEffect(() => {
-    if (!isSupabaseConfigured || config.mode !== 'production') return;
+    if (!isNeonConfigured || config.mode !== 'production') return;
     let active = true;
-    void supabase.auth.getSession().then(({ data }) => {
+    void neon.auth.getSession().then(({ data }) => {
       if (!active) return;
       setSession(data.session);
       setLoading(false);
     });
-    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => setSession(nextSession));
+    const { data } = neon.auth.onAuthStateChange((_event, nextSession) => setSession(nextSession));
     return () => {
       active = false;
       data.subscription.unsubscribe();
@@ -88,7 +87,7 @@ export function AppProvider({ children }: PropsWithChildren) {
     },
     refreshProfile,
     async signOut() {
-      if (session) await supabase.auth.signOut({ scope: 'local' });
+      if (session) await neon.auth.signOut({ scope: 'local' });
       setSession(null);
       if (config.enableDemoMode) {
         setRole('searcher');

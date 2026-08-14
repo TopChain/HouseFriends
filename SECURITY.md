@@ -6,8 +6,8 @@ Before production launch, the operator must publish a private security-reporting
 
 ## Protected data
 
-- Never commit Supabase secret/service-role keys, signing keys, OAuth secrets, service-account files, `.env`, or production map tokens.
-- Public clients receive only a Supabase publishable key. Authorization is enforced by database RLS, not by key secrecy.
+- Never commit Neon connection strings/passwords, signing keys, OAuth secrets, object-storage credentials, service-account files, `.env`, or production map tokens.
+- Public clients receive only Neon Auth and Data API endpoint URLs. Authorization is enforced by JWT validation and database RLS, not by endpoint secrecy.
 - Authorization does not use user-editable `user_metadata`.
 - Exact residential coordinates are not persisted in the experience model.
 - Pending media and customer-uploaded business cards are private.

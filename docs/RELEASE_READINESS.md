@@ -4,15 +4,15 @@
 
 - [x] Expo/React Native cross-platform source
 - [x] Approved CI tokens and Tool Circle assets
-- [x] Google/Apple authentication flow and alias-only onboarding
+- [x] Neon Auth/Data API client migration and alias-only onboarding contract
 - [x] Search/list/map adapter and safe-anchor flow
 - [x] Five-question experience publishing and integer/currency model
 - [x] Separate provider rating and recommender trust models
 - [x] Helpful → Verified idempotent relationship
 - [x] Individual/company provider model and RBAC contract
 - [x] Reporting, blocking, moderation, appeal, and audit contract
-- [x] In-app account deletion entry and privileged server flow
-- [x] RLS on all exposed tables; private media/card buckets
+- [x] In-app self-scoped account deletion request and privileged database flow
+- [x] RLS on all exposed tables; private media/card data contract
 - [x] Paid, regulated, and video release gates disabled by default
 - [x] Unit, role, security-contract, and global-invariant tests
 - [x] TypeScript, ESLint, Expo Doctor 20/20, rendered role smoke tests, and all-platform Metro export
@@ -22,11 +22,12 @@
 
 These items require the owner’s accounts, legal decisions, or paid services and must be completed during the store-publishing procedure:
 
-- [ ] Create a dedicated **HouseFriends** Supabase project; apply migration/functions; run security and performance advisors.
-- [ ] Configure Apple and Google OAuth credentials and redirect URLs.
+- [x] Create a dedicated **HouseFriends** Neon project and validate the migration on an isolated database branch with real Auth/Data API requests.
+- [x] Apply the validated migration to the Neon `main` branch and verify its RLS contract with real authenticated and anonymous Data API requests.
+- [ ] Deploy a production mobile auth path: self-hosted Better Auth with the Expo plugin or a mobile-ready external OIDC provider; configure Apple and Google credentials and redirect URLs. Managed Neon Auth alone is not currently the native Expo/Apple solution.
 - [ ] Connect Apple token revocation to the deletion function and verify it with a production Apple test identity.
 - [ ] Contract a production MapLibre-compatible tiles/geodata provider and set attribution/style URL.
-- [ ] Connect server-side image re-encoding/moderation, or hide photo upload for version 1.0.
+- [ ] Deploy `EXPO_PUBLIC_MEDIA_API_URL`, private object storage, and server-side image re-encoding/moderation, or hide photo upload for version 1.0.
 - [ ] Decide legal operating entity, privacy contact, support contact, mailing address, governing law, retention schedule, and minimum age.
 - [ ] Publish final privacy policy, terms, and support pages at stable HTTPS URLs.
 - [ ] Add a private web deletion-request channel to `docs/delete-account.html` for users who cannot access the app.

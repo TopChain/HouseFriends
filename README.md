@@ -7,7 +7,7 @@ HouseFriends is a privacy-first community trust network for real completed home-
 ## Release architecture
 
 - Expo 57, React Native, TypeScript, and Expo Router for one iOS/Android client.
-- Supabase Auth, PostgreSQL 17, Row Level Security, private Storage buckets, and Edge Functions.
+- Neon Serverless Postgres, Neon Data API, Neon Auth, and Row Level Security.
 - Google and Apple authentication; every human selects a public alias and receives a random HF-ID.
 - MapLibre-compatible `MapProviderAdapter`; production requires a licensed map style/tiles provider.
 - Safe Public Anchors and provider Service Areas are separate data concepts.
@@ -27,11 +27,11 @@ HouseFriends is a privacy-first community trust network for real completed home-
 
 1. Install Node 24 and run `npm ci`.
 2. Copy `.env.example` to `.env.local`.
-3. Keep `EXPO_PUBLIC_APP_MODE=demo` for local role testing, or configure a dedicated Supabase project and set production mode.
+3. Keep `EXPO_PUBLIC_APP_MODE=demo` for local role testing, or configure the dedicated Neon project endpoints and set production mode.
 4. Run `npm run verify`; CI also verifies a production-style all-platform Metro export.
 5. Run `npm start` with an Expo development client. MapLibre requires a development/native build rather than Expo Go.
 
-Do not commit `.env`, signing keys, service-role/secret keys, Apple keys, Google service-account JSON, or provider credentials.
+Do not commit `.env`, Neon connection strings/passwords, signing keys, Apple keys, Google service-account JSON, object-storage credentials, or provider secrets.
 
 ## Demo role testing
 
@@ -45,11 +45,13 @@ Account → Role test console switches among:
 
 Demo mode is disabled in the production environment.
 
-## Supabase
+## Neon
 
-The initial migration is in `supabase/migrations`. It enables RLS on every exposed `public` table, uses explicit ownership/member policies, stores privileged helpers in a private schema, revokes public execution from privileged RPCs, and limits account-deletion execution to the service role.
+The initial migration is in `neon/migrations`. It enables RLS on every exposed `public` table, uses Neon Auth UUIDs and Data API roles, keeps privileged helpers in a private schema, and exposes self-scoped RPC wrappers through a caller-identity handoff protected by RLS.
 
-Create a separate HouseFriends Supabase project before applying the migration. Never apply it to another application’s database.
+A dedicated HouseFriends Neon project is provisioned. Develop schema changes on a Neon branch, run real Auth/Data API tests there, and only then apply the reviewed migration to `main`. Never reuse another app's production branch.
+
+Neon Auth and the Neon Data API are currently beta. Managed Neon Auth does not yet provide the production Expo/React Native + Apple path HouseFriends needs, so native production authentication remains an explicit release gate; use a self-hosted Better Auth server with the Expo plugin or a mobile-ready external OIDC provider before store submission.
 
 ## Release
 

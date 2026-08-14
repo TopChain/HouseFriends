@@ -17,8 +17,8 @@
 | Rendered role screens | five React Native smoke screens for searcher, sharer, individual provider, company, and admin |
 | UGC safety | reporting, blocking, admin-only moderation |
 | Database | RLS on every exposed table, safe views, explicit privileged grants |
-| Storage | owner-folder insert/select/update/delete rules |
-| Deletion | service-role-only deletion RPC |
+| Media | authenticated upload-ticket contract and user-prefixed database paths |
+| Deletion | RLS identity handoff and self-scoped deletion-request RPC |
 | Global model | 64,000 country/area configurations × 58 invariant checks |
 | Bundling | production-style Metro exports for iOS, Android, and web |
 | Native configuration | clean Android and iOS prebuild probes, including coarse location and Sign in with Apple entitlement |

@@ -7,7 +7,7 @@ import { PrivacyNotice } from '@/components/PrivacyNotice';
 import { Screen } from '@/components/Screen';
 import { colors, radius, spacing, type } from '@/constants/theme';
 import { validateAlias } from '@/lib/domain/rules.mjs';
-import { supabase } from '@/lib/supabase';
+import { neon } from '@/lib/neon';
 import { useApp } from '@/providers/AppProvider';
 import type { AppRole } from '@/types/domain';
 
@@ -32,12 +32,12 @@ export default function OnboardingScreen() {
       if (!acceptedTerms) throw new Error('Accept the Terms and Community Rules before creating your profile.');
       setSaving(true);
       if (session) {
-        const { error } = await supabase.rpc('complete_onboarding', { p_alias: cleanAlias, p_role: role, p_terms_version: 'community-rules-v1' });
+        const { error } = await neon.rpc('complete_onboarding', { p_alias: cleanAlias, p_role: role, p_terms_version: 'community-rules-v1' });
         if (error) throw error;
         if (role === 'individual_provider' || role === 'company_provider') {
           const publicName = role === 'company_provider' ? businessName.trim() : cleanAlias;
           if (publicName.length < 2) throw new Error('Enter the company or trade name.');
-          const { error: providerError } = await supabase.rpc('create_provider_profile', {
+          const { error: providerError } = await neon.rpc('create_provider_profile', {
             p_kind: role === 'company_provider' ? 'company' : 'individual',
             p_public_name: publicName,
             p_trade_name: role === 'individual_provider' ? businessName.trim() || null : null,

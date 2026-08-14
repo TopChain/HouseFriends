@@ -5,7 +5,7 @@ flowchart TD
   A[Google or Apple sign-in] --> B[Private auth account]
   B --> C[Alias + random HF-ID]
   C --> D[Expo iOS / Android client]
-  D --> E[Supabase RLS Data API]
+  D --> E[Neon Data API + RLS]
   D --> F[MapProviderAdapter]
   F --> G[Licensed MapLibre-compatible provider]
   E --> H[Safe anchors + service areas]
@@ -31,7 +31,7 @@ Provider selections store a chosen area plus `include_descendants`; they do not 
 
 ## Identity and authorization
 
-- `auth.users` and private account data are not public.
+- `neon_auth.user` and private account data are not public.
 - `public_profiles` contains alias + HF-ID only.
 - Individual providers publish alias + HF-ID and optional voluntary trade name.
 - Companies publish company/branch names; all human members remain aliases.
@@ -40,7 +40,11 @@ Provider selections store a chosen area plus `include_descendants`; they do not 
 
 ## Media
 
-The client re-encodes selected images to JPEG. Production uploads land in a private pending bucket under the authenticated user folder. No client can publish an approved path or set the server-side `metadata_stripped` state. The included moderation function fails closed and keeps files private until a production re-encoding/moderation worker is connected.
+The client re-encodes selected images to JPEG. Production requests an authenticated, short-lived upload ticket from `EXPO_PUBLIC_MEDIA_API_URL`; the media service must enforce a user-prefixed object path and private pending storage. No client can publish an approved path or set the server-side `metadata_stripped` state. Until a production object store and re-encoding/moderation worker are connected, the production environment validator blocks release.
+
+## Authentication boundary
+
+Neon Auth JWTs are validated by the Data API. RLS policies read the JWT subject through Neon's managed `auth.user_id()` helper. Because Data API application roles cannot directly use the managed `auth` schema inside RPC code, an RLS-protected `request_identities` row safely hands the current UUID to security-invoker RPC wrappers; privileged mutations remain in the private schema. Native Expo social sign-in still requires a mobile-ready Better Auth/Expo or external OIDC deployment before store submission.
 
 ## Controlled release gates
 

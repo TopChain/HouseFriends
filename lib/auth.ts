@@ -1,7 +1,6 @@
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
-import type { Provider } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { neon } from '@/lib/neon';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -10,9 +9,9 @@ function queryParams(url: string): Record<string, string> {
   return Object.fromEntries(new URLSearchParams(hash ?? '').entries());
 }
 
-export async function signInWithProvider(provider: Extract<Provider, 'apple' | 'google'>): Promise<void> {
+export async function signInWithProvider(provider: 'apple' | 'google'): Promise<void> {
   const redirectTo = Linking.createURL('auth/callback');
-  const { data, error } = await supabase.auth.signInWithOAuth({
+  const { data, error } = await neon.auth.signInWithOAuth({
     provider,
     options: { redirectTo, skipBrowserRedirect: true },
   });
@@ -22,7 +21,6 @@ export async function signInWithProvider(provider: Extract<Provider, 'apple' | '
   if (result.type !== 'success') throw new Error('Sign-in was cancelled.');
   const params = queryParams(result.url);
   if (params.error_description) throw new Error(params.error_description);
-  if (!params.access_token || !params.refresh_token) throw new Error('Sign-in returned an incomplete session.');
-  const { error: sessionError } = await supabase.auth.setSession({ access_token: params.access_token, refresh_token: params.refresh_token });
+  const { error: sessionError } = await neon.auth.exchangeCodeForSession(params.code ?? 'oauth-callback');
   if (sessionError) throw sessionError;
 }

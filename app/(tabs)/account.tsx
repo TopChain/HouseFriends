@@ -6,7 +6,7 @@ import { Card } from '@/components/Card';
 import { Screen } from '@/components/Screen';
 import { colors, radius, spacing, type } from '@/constants/theme';
 import { config } from '@/lib/config';
-import { supabase } from '@/lib/supabase';
+import { neon } from '@/lib/neon';
 import { useApp } from '@/providers/AppProvider';
 import type { AppRole } from '@/types/domain';
 
@@ -26,7 +26,7 @@ export default function AccountScreen() {
     }
     Alert.alert('Delete HouseFriends account?', 'This starts permanent deletion, recalculates reputation, and cannot be undone after the recovery window.', [
       { text: 'Cancel', style: 'cancel' }, { text: 'Delete account', style: 'destructive', onPress: async () => {
-        const { error } = await supabase.functions.invoke('delete-account', { body: { confirm: 'DELETE MY ACCOUNT' } });
+        const { error } = await neon.rpc('request_account_deletion');
         if (error) Alert.alert('Deletion could not start', error.message); else { await signOut(); router.replace('/sign-in'); }
       } },
     ]);
