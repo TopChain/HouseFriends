@@ -1,0 +1,27 @@
+project_id = "housefriends"
+
+[api]
+enabled = true
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+major_version = 17
+
+[auth]
+enabled = true
+site_url = "housefriends://auth/callback"
+additional_redirect_urls = ["housefriends://**"]
+jwt_expiry = 3600
+enable_signup = true
+
+[storage]
+enabled = true
+file_size_limit = "15MiB"
+
+[functions.delete-account]
+verify_jwt = true
+
+[functions.moderate-media]
+verify_jwt = true

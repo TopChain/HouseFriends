@@ -1,0 +1,67 @@
+{
+  "expo": {
+    "name": "HouseFriends",
+    "slug": "housefriends",
+    "scheme": "housefriends",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "HouseFriends uses selected photos to document a completed service experience. Location metadata is removed before publication.",
+          "cameraPermission": "HouseFriends uses the camera only when you choose to document a service experience or provider card."
+        }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Allow HouseFriends to protect your signed-in session."
+        }
+      ],
+      [
+        "expo-web-browser",
+        {
+          "experimentalLauncherActivity": false
+        }
+      ],
+      "@maplibre/maplibre-react-native"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.housefriends.app",
+      "buildNumber": "1",
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "HouseFriends uses your approximate location temporarily to suggest safe public anchors. Your home address is never stored or shown.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": true,
+      "package": "com.housefriends.app",
+      "versionCode": 1,
+      "permissions": ["ACCESS_COARSE_LOCATION"]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": { "origin": false }
+    }
+  }
+}
