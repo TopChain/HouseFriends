@@ -1,0 +1,23 @@
+import { Alert, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Badge } from '@/components/Badge';
+import { BrandHeader } from '@/components/BrandHeader';
+import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
+import { Screen } from '@/components/Screen';
+import { colors, spacing, type } from '@/constants/theme';
+
+const cases = [
+  { id: 'MOD-204', priority: 'Critical privacy', title: 'Possible street address in photo', age: '4 min' },
+  { id: 'CLM-088', priority: 'Provider claim', title: 'Company branch authority review', age: '22 min' },
+  { id: 'APL-019', priority: 'Appeal', title: 'Experience removal appeal', age: '1 hr' },
+];
+
+export default function AdminScreen() {
+  const router = useRouter();
+  return <Screen header={<BrandHeader compact title="HouseFriends administration" />}><Pressable onPress={() => router.back()} style={styles.back}><Text style={styles.backText}>‹ Account</Text></Pressable><Text style={styles.title}>Safety and control center</Text><Text style={styles.private}>Moderator legal identity is never exposed publicly. Every action is audited.</Text><View style={styles.metrics}><Metric value="3" label="priority cases" /><Metric value="12" label="open reports" /><Metric value="4" label="claims pending" /></View><Text style={styles.section}>Risk-prioritized queue</Text>{cases.map((item) => <Card key={item.id}><View style={styles.caseTop}><Badge label={item.priority} tone={item.priority.includes('privacy') ? 'orange' : 'blue'} /><Text style={styles.age}>{item.age}</Text></View><Text style={styles.caseTitle}>{item.title}</Text><Text style={styles.caseId}>{item.id}</Text><View style={styles.actions}><Button label="Review evidence" tone="quiet" onPress={() => Alert.alert(item.id, 'Evidence view includes report context, content history, prior actions, and block state.')} /><Button label="Assign to me" tone="secondary" onPress={() => Alert.alert('Assigned', `${item.id} is now assigned to your private admin alias.`)} /></View></Card>)}<Text style={styles.section}>Country launch gates</Text><Gate label="United States core experiences" value /><Gate label="United States sponsored promotion" value={false} /><Gate label="Regulated license verification" value={false} /><Text style={styles.note}>Disabled gates cannot be overridden by client code. Legal/compliance and billing approvals are required before activation.</Text><Text style={styles.section}>Taxonomy</Text><Card><Text style={styles.caseTitle}>35 stable launch categories</Text><Text style={styles.note}>“Other / Specialty” suggestions are normalized and reviewed. Historical records keep stable category IDs when a specialty is promoted.</Text><Button label="Review specialty queue" tone="quiet" onPress={() => Alert.alert('Taxonomy queue', '8 normalized specialty suggestions await review.')} style={styles.button} /></Card></Screen>;
+}
+
+function Metric({ value, label }: { value: string; label: string }) { return <View style={styles.metric}><Text style={styles.metricValue}>{value}</Text><Text style={styles.metricLabel}>{label}</Text></View>; }
+function Gate({ label, value }: { label: string; value: boolean }) { return <View style={styles.gate}><Text style={styles.gateLabel}>{label}</Text><Switch value={value} disabled trackColor={{ true: colors.green }} /></View>; }
+const styles = StyleSheet.create({ back: { minHeight: 44, justifyContent: 'center' }, backText: { color: colors.blue, fontWeight: '800' }, title: { ...type.pageTitle }, private: { ...type.body, color: colors.gray, marginTop: spacing.sm }, metrics: { flexDirection: 'row', backgroundColor: colors.navy, borderRadius: 18, paddingVertical: spacing.lg, marginTop: spacing.lg }, metric: { flex: 1, alignItems: 'center' }, metricValue: { color: colors.white, fontSize: 25, fontWeight: '900' }, metricLabel: { color: '#DDE7F4', fontSize: 10, textAlign: 'center' }, section: { ...type.sectionTitle, marginTop: spacing.xl, marginBottom: spacing.sm }, caseTop: { flexDirection: 'row', justifyContent: 'space-between' }, age: type.caption, caseTitle: { ...type.cardTitle, marginTop: spacing.sm }, caseId: { ...type.caption, marginTop: 3 }, actions: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.md }, gate: { flexDirection: 'row', alignItems: 'center', minHeight: 58, backgroundColor: colors.white, paddingHorizontal: spacing.md, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.grayLight }, gateLabel: { ...type.body, flex: 1, fontWeight: '700' }, note: { ...type.caption, marginTop: spacing.sm }, button: { marginTop: spacing.md } });

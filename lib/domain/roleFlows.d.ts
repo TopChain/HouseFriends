@@ -1,0 +1,11 @@
+export type FlowRole = 'sharer' | 'searcher' | 'individual_provider' | 'company_provider' | 'admin';
+export function createFlowState(): any;
+export function addUser(state: any, user: { id: string; role: FlowRole; alias: string }): any;
+export function addProvider(state: any, provider: { id: string; ownerId: string; kind: 'individual' | 'company'; categoryIds: string[]; serviceAreaIds: string[] }): any;
+export function publishExperience(state: any, actorId: string, draft: any): any;
+export function relateReferral(state: any, searcherId: string, experienceId: string, requested: 'helpful' | 'verified'): any;
+export function providerRespond(state: any, actorId: string, experienceId: string, response: string): string;
+export function reportContent(state: any, actorId: string, targetId: string, details: string): any;
+export function blockUser(state: any, blockerId: string, blockedId: string): void;
+export function moderateReport(state: any, adminId: string, reportId: string, decision: 'actioned' | 'dismissed'): any;
+export function discover(cards: any[]): any[];
