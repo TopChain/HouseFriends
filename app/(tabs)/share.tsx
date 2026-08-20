@@ -34,6 +34,7 @@ export default function ShareScreen() {
   const [rating, setRating] = useState<Rating>({ quality: 5, value: 5, reliability: 5, communication: 5, recommend: 5 });
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
   const [publishing, setPublishing] = useState(false);
+  const photosEnabled = config.mode !== 'production' || Boolean(config.mediaApiUrl);
 
   useEffect(() => {
     void Promise.all([repository.listProviders({}), repository.listAnchors()]).then(([providerRows, anchorRows]) => {
@@ -44,6 +45,7 @@ export default function ShareScreen() {
   const anchor = useMemo(() => anchors.find((item) => item.id === anchorId), [anchorId, anchors]);
 
   async function addPhoto() {
+    if (!photosEnabled) return;
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsMultipleSelection: true, selectionLimit: 4, quality: 0.9, exif: false });
     if (result.canceled) return;
     const reencoded = await Promise.all(result.assets.slice(0, 4 - mediaUrls.length).map((asset) => manipulateAsync(asset.uri, [], { compress: 0.84, format: SaveFormat.JPEG })));
@@ -56,7 +58,7 @@ export default function ShareScreen() {
       const money = normalizeMoney(Number(cost), 'USD');
       const draft = {
         provider, categoryId, serviceItem: serviceItem.trim(), serviceMonth: `${serviceMonth}-01`, ...money,
-        includesMaterialsTax: materialsTax, rating, comment: comment.trim(), anchor, mediaUrls,
+        includesMaterialsTax: materialsTax, rating, comment: comment.trim(), anchor, mediaUrls: photosEnabled ? mediaUrls : [],
       };
       assertNoPrivateAddress(draft);
       validateExperienceDraft(draft);
@@ -89,9 +91,14 @@ export default function ShareScreen() {
       <TextInput value={comment} onChangeText={setComment} placeholder="What should a neighbor know? Do not include a private address." maxLength={2000} multiline textAlignVertical="top" style={[styles.input, styles.comment]} />
       <FieldLabel step="7" label="Safe public anchor" />
       {anchors.map((item) => <Choice key={item.id} selected={anchorId === item.id} label={item.name} detail={`${item.locality} · public ${item.class.replaceAll('_', ' ')}`} onPress={() => setAnchorId(item.id)} />)}
-      <FieldLabel step="8" label="Optional photos" />
-      <Text style={styles.help}>Up to 4 images. Every selected photo is re-encoded before upload to remove EXIF and GPS metadata. Video remains disabled until secure processing is configured.</Text>
-      <View style={styles.mediaRow}>{mediaUrls.map((uri) => <Image key={uri} source={{ uri }} style={styles.photo} />)}{mediaUrls.length < 4 ? <Pressable onPress={() => void addPhoto()} style={styles.addPhoto}><Text style={styles.addPhotoText}>＋ Photo</Text></Pressable> : null}</View>
+      {photosEnabled ? <>
+        <FieldLabel step="8" label="Optional photos" />
+        <Text style={styles.help}>Up to 4 images. Every selected photo is re-encoded before upload to remove EXIF and GPS metadata. Video remains disabled until secure processing is configured.</Text>
+        <View style={styles.mediaRow}>{mediaUrls.map((uri) => <Image key={uri} source={{ uri }} style={styles.photo} />)}{mediaUrls.length < 4 ? <Pressable onPress={() => void addPhoto()} style={styles.addPhoto}><Text style={styles.addPhotoText}>＋ Photo</Text></Pressable> : null}</View>
+      </> : <>
+        <FieldLabel step="8" label="Photos" />
+        <Text style={styles.help}>Photo sharing is not included in version 1.0. It will be enabled after private media storage and moderation are deployed.</Text>
+      </>}
       <View style={styles.confirm}><Text style={styles.confirmTitle}>Before publishing</Text><Text style={styles.help}>I confirm this describes a completed service, uses the actual reported cost, and contains no private home address or exact service date.</Text></View>
       <Button label="Publish real experience" onPress={() => void publish()} loading={publishing} style={styles.publish} />
     </Screen>
