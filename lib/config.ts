@@ -1,7 +1,6 @@
 const requiredProductionKeys = [
   'EXPO_PUBLIC_NEON_AUTH_URL',
   'EXPO_PUBLIC_NEON_DATA_API_URL',
-  'EXPO_PUBLIC_MAP_STYLE_URL',
   'EXPO_PUBLIC_PRIVACY_URL',
   'EXPO_PUBLIC_TERMS_URL',
   'EXPO_PUBLIC_SUPPORT_URL',
@@ -9,13 +8,15 @@ const requiredProductionKeys = [
   'EXPO_PUBLIC_ACCOUNT_DELETION_URL',
 ] as const;
 
+const defaultMapStyleUrl = 'https://tiles.openfreemap.org/styles/liberty';
+
 export const config = {
   mode: process.env.EXPO_PUBLIC_APP_MODE ?? 'demo',
   enableDemoMode: process.env.EXPO_PUBLIC_ENABLE_DEMO_MODE !== 'false',
   neonAuthUrl: process.env.EXPO_PUBLIC_NEON_AUTH_URL ?? '',
   neonDataApiUrl: process.env.EXPO_PUBLIC_NEON_DATA_API_URL ?? '',
   mediaApiUrl: process.env.EXPO_PUBLIC_MEDIA_API_URL ?? '',
-  mapStyleUrl: process.env.EXPO_PUBLIC_MAP_STYLE_URL ?? '',
+  mapStyleUrl: process.env.EXPO_PUBLIC_MAP_STYLE_URL ?? defaultMapStyleUrl,
   privacyUrl: process.env.EXPO_PUBLIC_PRIVACY_URL ?? '',
   termsUrl: process.env.EXPO_PUBLIC_TERMS_URL ?? '',
   supportEmail: process.env.EXPO_PUBLIC_SUPPORT_EMAIL ?? '',
